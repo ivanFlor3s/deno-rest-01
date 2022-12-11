@@ -9,13 +9,14 @@ export const routes = new Router();
 //USERS
 routes.get("/users", usersController.listarUsuarios);
 routes.get("/users/asd", usersController.getUser);
-
+routes.post('/users/login', usersController.login )
+// routes.post('/users/login', ()=>console.log('hola') )
 //AUTH
 routes.post("/auth/register", async (ctx: Context) => {
   const reqBody = await ctx.request.body().value;
   ctx.assert(!!reqBody.email, Status.BadRequest, "Email NOT FOUND");
   ctx.assert(!!reqBody.password, Status.BadRequest, "password NOT FOUND");
-  ctx.assert(!(reqBody.password.length > 8), Status.Forbidden, "Contrasena debe tener mas de 8 caracteres")
+  ctx.assert((reqBody.password.length > 8), Status.Forbidden, "Contrasena debe tener mas de 8 caracteres")
   ctx.assert(!isEmail(reqBody.email), Status.BadRequest, "Email invalido");
   ctx.assert(
     !(await userValidators.checkAlreadyExist(reqBody.email)),
@@ -24,3 +25,5 @@ routes.post("/auth/register", async (ctx: Context) => {
   );
   return authController.register(ctx);
 });
+
+
